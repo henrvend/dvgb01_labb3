@@ -2,8 +2,10 @@
 #include <string.h>
 #include <stdlib.h>
 
-int array[75], num_of_frames, algo;
-void fifo();
+#define MAX 100
+
+int array[MAX], num_of_frames, algo, num_of_inputs;
+void fifo(int x, int y);
 void optimal();
 void lru();
 
@@ -25,9 +27,9 @@ int main(int argc, char *argv[])
             {
                 // printf("Test %X\n", array[j]);
                 // printf("Value for hex: %d\n", array[j]);
-
                 j++;
             }
+            num_of_inputs = j;
 
             printf("\n");
             fclose(fp);
@@ -54,10 +56,10 @@ int main(int argc, char *argv[])
             algo = i + 1;
         }
     }
-    
+
     if (strcasecmp(argv[algo], "fifo") == 0)
     {
-        fifo();
+        fifo(num_of_frames, num_of_inputs);
     }
     else if (strcasecmp(argv[algo], "optimal") == 0)
     {
@@ -75,16 +77,50 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-void fifo()
+void fifo(int max_num_of_frames, int num_of_inputs)
 {
+    int frames[MAX], number_of_frames_created = 0;
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < num_of_inputs; i++)
     {
-        printf("Test %04X\n", array[i]);
-        printf("Value for hex: %d\n", array[i]);
-    }
+        /*if (array[i] == 0)
+        {
+            break;
+        }*/
+        // printf("Value for hex: %d\n", array[i]);
 
-    printf("fifo\n");
+        if (number_of_frames_created != 0)
+        {
+            for (int j = 0; j < number_of_frames_created; j++)
+            {
+                if (array[i] > frames[j] && array[i] < (frames[j] + 255))
+                {
+                    frames[number_of_frames_created] = array[i];
+                    printf("HEX 0x%04X med värde %d från array[%i] har placerats på sida %d\n", array[i], array[i], i, j);
+                    break;
+                }
+            }
+        }
+        else
+        {
+            frames[number_of_frames_created] = array[i];
+            printf("Page %d har skapats för HEX 0x%04X med värde %d.\n", number_of_frames_created, array[i], array[i]);
+            number_of_frames_created++;
+        }
+
+        // if (number_of_frames_created < max_num_of_frames && frames[number_of_frames_created] == 0)
+        if (number_of_frames_created < max_num_of_frames)
+        {
+            frames[number_of_frames_created] = array[i];
+            printf("Sida %d har skapats för HEX 0x%04X med värde %d.\n", number_of_frames_created, array[i], array[i]);
+            number_of_frames_created++;
+        }
+        else if (number_of_frames_created == max_num_of_frames)
+        {
+            // Skapa parameter med namn "oldest frame som ökar varje gång upp till max frame"
+            frames[number_of_frames_created - max_num_of_frames] = array[i];
+        }
+    }
 }
 
 void optimal()
