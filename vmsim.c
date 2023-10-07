@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
-#define MAX 100
+#define MAX 256
 
 int array[MAX], num_of_frames, algo, num_of_inputs;
+
 void fifo(int x, int y);
 void optimal();
 void lru();
@@ -79,23 +81,80 @@ int main(int argc, char *argv[])
 
 void fifo(int max_num_of_frames, int num_of_inputs)
 {
-    int frames[MAX], number_of_frames_created = 0;
+    int pages[MAX], number_of_frames_created = 0, oldest_frame = 0;
+    int frames[4];
 
+    // Hitta vilken page nummret tillhör
     for (int i = 0; i < num_of_inputs; i++)
     {
-        /*if (array[i] == 0)
+        int k = array[i] / 256;
+        bool cont = true;
+
+        if (number_of_frames_created == 0)
+        {
+            printf("Adress %04x is not in physical memory\n", array[i]);
+            printf("Page %d paged in\n", k);
+            frames[number_of_frames_created] = k;
+            number_of_frames_created++;
+            continue;
+        }
+
+        for (int j = 0; j < number_of_frames_created; j++)
+        {
+            if (k == frames[j])
+            {
+                printf("Adress %04x is on page %d which is already in physical memoroy\n", array[i], k);
+                // number_of_frames_created++;
+                //  Tilldelning till befintlig sida.
+                cont = false;
+            }
+        }
+
+        if (cont)
+        {
+            if (number_of_frames_created < max_num_of_frames)
+            {
+                printf("Adress %04x is not in physical memory\n", array[i]);
+                printf("Page %d paged in\n", k);
+                frames[number_of_frames_created] = k;
+                number_of_frames_created++;
+            }
+            else
+            {
+                // Ta ersätt första sidan med nya k värdet.
+                printf("Adress %04x is not in physical memory\n", array[i]);
+                printf("Page %d paged out\n", frames[oldest_frame]);
+                printf("Page %d paged in\n", k);
+                frames[oldest_frame] = k;
+                if (oldest_frame = max_num_of_frames)
+                {
+                    oldest_frame = 0;
+                }
+                else
+                {
+                    oldest_frame++;
+                }
+            }
+        }
+
+        // printf("Address 0X%04x is in page %d\n", array[i], k);
+    }
+
+    /*for (int i = 0; i < num_of_inputs; i++)
+    {
+        if (array[i] == 0)
         {
             break;
-        }*/
+        }
         // printf("Value for hex: %d\n", array[i]);
 
         if (number_of_frames_created != 0)
         {
             for (int j = 0; j < number_of_frames_created; j++)
             {
-                if (array[i] > frames[j] && array[i] < (frames[j] + 255))
+                if (array[i] > pages[j] && array[i] < (pages[j] + 255))
                 {
-                    frames[number_of_frames_created] = array[i];
+                    pages[number_of_frames_created] = array[i];
                     printf("HEX 0x%04X med värde %d från array[%i] har placerats på sida %d\n", array[i], array[i], i, j);
                     break;
                 }
@@ -103,7 +162,7 @@ void fifo(int max_num_of_frames, int num_of_inputs)
         }
         else
         {
-            frames[number_of_frames_created] = array[i];
+            pages[number_of_frames_created] = array[i];
             printf("Page %d har skapats för HEX 0x%04X med värde %d.\n", number_of_frames_created, array[i], array[i]);
             number_of_frames_created++;
         }
@@ -111,16 +170,16 @@ void fifo(int max_num_of_frames, int num_of_inputs)
         // if (number_of_frames_created < max_num_of_frames && frames[number_of_frames_created] == 0)
         if (number_of_frames_created < max_num_of_frames)
         {
-            frames[number_of_frames_created] = array[i];
+            pages[number_of_frames_created] = array[i];
             printf("Sida %d har skapats för HEX 0x%04X med värde %d.\n", number_of_frames_created, array[i], array[i]);
             number_of_frames_created++;
         }
         else if (number_of_frames_created == max_num_of_frames)
         {
             // Skapa parameter med namn "oldest frame som ökar varje gång upp till max frame"
-            frames[number_of_frames_created - max_num_of_frames] = array[i];
+            pages[number_of_frames_created - max_num_of_frames] = array[i];
         }
-    }
+    }*/
 }
 
 void optimal()
