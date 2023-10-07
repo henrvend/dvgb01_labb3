@@ -5,7 +5,7 @@
 
 #define MAX 256
 
-int array[MAX], num_of_frames, algo, num_of_inputs;
+int array[MAX], num_of_frames, algo, num_of_inputs; 
 
 void fifo(int x, int y);
 void optimal();
@@ -136,50 +136,7 @@ void fifo(int max_num_of_frames, int num_of_inputs)
                 }
             }
         }
-
-        // printf("Address 0X%04x is in page %d\n", array[i], k);
     }
-
-    /*for (int i = 0; i < num_of_inputs; i++)
-    {
-        if (array[i] == 0)
-        {
-            break;
-        }
-        // printf("Value for hex: %d\n", array[i]);
-
-        if (number_of_frames_created != 0)
-        {
-            for (int j = 0; j < number_of_frames_created; j++)
-            {
-                if (array[i] > pages[j] && array[i] < (pages[j] + 255))
-                {
-                    pages[number_of_frames_created] = array[i];
-                    printf("HEX 0x%04X med värde %d från array[%i] har placerats på sida %d\n", array[i], array[i], i, j);
-                    break;
-                }
-            }
-        }
-        else
-        {
-            pages[number_of_frames_created] = array[i];
-            printf("Page %d har skapats för HEX 0x%04X med värde %d.\n", number_of_frames_created, array[i], array[i]);
-            number_of_frames_created++;
-        }
-
-        // if (number_of_frames_created < max_num_of_frames && frames[number_of_frames_created] == 0)
-        if (number_of_frames_created < max_num_of_frames)
-        {
-            pages[number_of_frames_created] = array[i];
-            printf("Sida %d har skapats för HEX 0x%04X med värde %d.\n", number_of_frames_created, array[i], array[i]);
-            number_of_frames_created++;
-        }
-        else if (number_of_frames_created == max_num_of_frames)
-        {
-            // Skapa parameter med namn "oldest frame som ökar varje gång upp till max frame"
-            pages[number_of_frames_created - max_num_of_frames] = array[i];
-        }
-    }*/
 }
 
 void optimal()
