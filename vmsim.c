@@ -5,11 +5,12 @@
 
 #define MAX 256
 
-int array[MAX], num_of_frames, algo, num_of_inputs; 
+int array[MAX], num_of_frames, algo, num_of_inputs;
 
 void fifo(int x, int y);
 void optimal();
 void lru();
+void print();
 
 int main(int argc, char *argv[])
 {
@@ -81,8 +82,11 @@ int main(int argc, char *argv[])
 
 void fifo(int max_num_of_frames, int num_of_inputs)
 {
-    int pages[MAX], number_of_frames_created = 0, oldest_frame = 0;
+
+    printf("Running simulation...\n\n");
+    int number_of_frames_created = 0, oldest_frame = 0;
     int frames[4];
+    // int pages[MAX]
 
     // Hitta vilken page nummret tillhör
     for (int i = 0; i < num_of_inputs; i++)
@@ -126,7 +130,7 @@ void fifo(int max_num_of_frames, int num_of_inputs)
                 printf("Page %d paged out\n", frames[oldest_frame]);
                 printf("Page %d paged in\n", k);
                 frames[oldest_frame] = k;
-                if (oldest_frame = max_num_of_frames)
+                if (oldest_frame == max_num_of_frames)
                 {
                     oldest_frame = 0;
                 }
@@ -137,6 +141,9 @@ void fifo(int max_num_of_frames, int num_of_inputs)
             }
         }
     }
+    char fifo[] = "This is a string to send to the function.";
+    print(fifo);
+    printf("\nRunning simulation...Done.");
 }
 
 void optimal()
@@ -146,4 +153,7 @@ void optimal()
 void lru()
 {
     printf("lru\n");
+}
+void printf(char fifo[]){
+
 }
