@@ -6,11 +6,15 @@
 #define MAX 256
 
 int array[MAX], num_of_frames, algo, num_of_inputs;
+int mem_acc = 0;
+int p_hits = 0;
+int p_faults = 0;
+int p_replacements = 0;
 
 void fifo(int x, int y);
 void optimal();
 void lru();
-void print();
+void print(char *);
 
 int main(int argc, char *argv[])
 {
@@ -94,12 +98,17 @@ void fifo(int max_num_of_frames, int num_of_inputs)
         int k = array[i] / 256;
         bool cont = true;
 
+
+        //First time something comes to memory, page it in
         if (number_of_frames_created == 0)
         {
             printf("Adress %04x is not in physical memory\n", array[i]);
             printf("Page %d paged in\n", k);
             frames[number_of_frames_created] = k;
+            oldest_frame=k;
             number_of_frames_created++;
+            mem_acc++;
+            p_faults++;
             continue;
         }
 
@@ -110,6 +119,8 @@ void fifo(int max_num_of_frames, int num_of_inputs)
                 printf("Adress %04x is on page %d which is already in physical memoroy\n", array[i], k);
                 // number_of_frames_created++;
                 //  Tilldelning till befintlig sida.
+                p_hits++;
+                mem_acc++;
                 cont = false;
             }
         }
@@ -122,6 +133,8 @@ void fifo(int max_num_of_frames, int num_of_inputs)
                 printf("Page %d paged in\n", k);
                 frames[number_of_frames_created] = k;
                 number_of_frames_created++;
+                mem_acc++;
+                p_faults++;
             }
             else
             {
@@ -129,8 +142,11 @@ void fifo(int max_num_of_frames, int num_of_inputs)
                 printf("Adress %04x is not in physical memory\n", array[i]);
                 printf("Page %d paged out\n", frames[oldest_frame]);
                 printf("Page %d paged in\n", k);
+                mem_acc++;
+                p_faults++;
+                p_replacements++;
                 frames[oldest_frame] = k;
-                if (oldest_frame == max_num_of_frames)
+                if (oldest_frame == max_num_of_frames-1)
                 {
                     oldest_frame = 0;
                 }
@@ -141,19 +157,31 @@ void fifo(int max_num_of_frames, int num_of_inputs)
             }
         }
     }
-    char fifo[] = "This is a string to send to the function.";
-    print(fifo);
-    printf("\nRunning simulation...Done.");
+  
+    
+
+
+    print("FIFO");
+
 }
 
 void optimal()
 {
-    printf("optimal\n");
+    print("Optimal");
 }
 void lru()
 {
-    printf("lru\n");
+    print("LRU");
 }
-void printf(char fifo[]){
-
+void print(char alg[]){
+    
+    printf("\nRunning simulation...Done.\n");
+    
+    printf("\nSimulation summary\n\n");
+    printf("%-25s %s\n", "Algorithm:", alg);
+    printf("%-25s %d\n", "Frames:", num_of_frames);
+    printf("%-25s %d\n", "Memory accesses:", mem_acc);
+    printf("%-25s %d\n", "Page hits:", p_hits);
+    printf("%-25s %d\n", "Page faults:", p_faults);
+    printf("%-25s %d\n", "Page replacements", p_replacements);
 }
