@@ -11,14 +11,13 @@ int p_hits = 0;
 int p_faults = 0;
 int p_replacements = 0;
 
-void fifo(int x, int y);
+void fifo();
 void optimal();
 void lru();
 void print(char *);
 
 int main(int argc, char *argv[])
 {
-
     for (int i = 1; i < argc; i++)
     {
         if (strcasecmp(argv[i], "-f") == 0)
@@ -32,8 +31,6 @@ int main(int argc, char *argv[])
             int j = 0;
             while (fscanf(fp, "%x", &array[j]) == 1)
             {
-                // printf("Test %X\n", array[j]);
-                // printf("Value for hex: %d\n", array[j]);
                 j++;
             }
             num_of_inputs = j;
@@ -66,7 +63,7 @@ int main(int argc, char *argv[])
 
     if (strcasecmp(argv[algo], "fifo") == 0)
     {
-        fifo(num_of_frames, num_of_inputs);
+        fifo();
     }
     else if (strcasecmp(argv[algo], "optimal") == 0)
     {
@@ -84,13 +81,12 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-void fifo(int max_num_of_frames, int num_of_inputs)
+void fifo()
 {
 
     printf("Running simulation...\n\n");
     int number_of_frames_created = 0, oldest_frame = 0;
     int frames[MAX];
-    // int pages[MAX]
 
     // Hitta vilken page nummret tillhör
     for (int i = 0; i < num_of_inputs; i++)
@@ -126,7 +122,7 @@ void fifo(int max_num_of_frames, int num_of_inputs)
 
         if (cont)
         {
-            if (number_of_frames_created < max_num_of_frames)
+            if (number_of_frames_created < num_of_frames)
             {
                 printf("Adress %04x is not in physical memory\n", array[i]);
                 printf("Page %d paged in\n", k);
@@ -145,7 +141,7 @@ void fifo(int max_num_of_frames, int num_of_inputs)
                 p_faults++;
                 p_replacements++;
                 frames[oldest_frame] = k;
-                if (oldest_frame == max_num_of_frames - 1)
+                if (oldest_frame == num_of_frames - 1)
                 {
                     oldest_frame = 0;
                 }
@@ -156,7 +152,6 @@ void fifo(int max_num_of_frames, int num_of_inputs)
             }
         }
     }
-
     print("FIFO");
 }
 
@@ -165,7 +160,6 @@ void lru()
     printf("Running simulation...\n\n");
     int number_of_frames_created = 0;
     int frames[MAX];
-    // int pages[MAX]
 
     // Hitta vilken page nummret tillhör
     for (int i = 0; i < num_of_inputs; i++)
@@ -173,7 +167,6 @@ void lru()
         int k = array[i] / 256;
         bool cont = true;
 
-        // First time something comes to memory, page it in
         if (number_of_frames_created == 0)
         {
             printf("Adress %04x is not in physical memory\n", array[i]);
@@ -199,7 +192,6 @@ void lru()
                 }
                 frames[number_of_frames_created] = temp;
 
-                // number_of_frames_created++;
                 //  Tilldelning till befintlig sida.
                 p_hits++;
                 mem_acc++;
@@ -220,7 +212,6 @@ void lru()
             }
             else
             {
-
                 printf("Adress %04x is not in physical memory\n", array[i]);
                 printf("Page %d paged out\n", frames[0]);
                 printf("Page %d paged in\n", k);
@@ -245,7 +236,6 @@ void optimal()
     printf("Running simulation...\n\n");
     int number_of_frames_created = 0, furthest_away = 0;
     int frames[MAX];
-    // int pages[MAX]
 
     // Hitta vilken page nummret tillhör
     for (int i = 0; i < num_of_inputs; i++)
@@ -253,7 +243,6 @@ void optimal()
         int k = array[i] / 256;
         bool cont = true;
 
-        // First time something comes to memory, page it in
         if (number_of_frames_created == 0)
         {
             printf("Adress %04x is not in physical memory\n", array[i]);
@@ -271,8 +260,6 @@ void optimal()
             if (k == frames[j])
             {
                 printf("Adress %04x is on page %d which is already in physical memoroy\n", array[i], k);
-                // number_of_frames_created++;
-                //  Tilldelning till befintlig sida.
                 p_hits++;
                 mem_acc++;
                 cont = false;
@@ -292,7 +279,6 @@ void optimal()
             }
             else
             {
-
                 int highest = 0;
                 int temp;
                 
@@ -318,8 +304,6 @@ void optimal()
                     }
                 }
                 furthest_away = temp;
-
-
                 // Ta ersätt första sidan med nya k värdet.
                 printf("Adress %04x is not in physical memory\n", array[i]);
                 printf("Page %d paged out\n", frames[furthest_away]);
@@ -332,15 +316,12 @@ void optimal()
             }
         }
     }
-
     print("Optimal");
 }
 
 void print(char alg[])
 {
-
     printf("\nRunning simulation...Done.\n");
-
     printf("\nSimulation summary\n\n");
     printf("%-25s %s\n", "Algorithm:", alg);
     printf("%-25s %d\n", "Frames:", num_of_frames);
