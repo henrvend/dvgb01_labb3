@@ -7,10 +7,10 @@ vmsim: vmsim.c
 	$(CC) $(CFLAGS) -o vmsim vmsim.c
 
 run: vmsim
-	./vmsim -a fifo -n 4 -f trace.dat
+	./vmsim -a optimal -n 4 -f trace.dat
 
 run1: vmsim
-	./vmsim -a fifo -n 4 -f trace_1.dat
+	./vmsim -a lru -n 4 -f trace_1.dat
 
 run2: vmsim
 	./vmsim -a fifo -n 4 -f trace_2.dat
