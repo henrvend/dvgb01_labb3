@@ -83,18 +83,16 @@ int main(int argc, char *argv[])
 
 void fifo()
 {
-
     printf("Running simulation...\n\n");
     int number_of_frames_created = 0, oldest_frame = 0;
     int frames[MAX];
 
-    // Hitta vilken page nummret tillhör
+    // Hitta vilken page nummret tillhör.
     for (int i = 0; i < num_of_inputs; i++)
     {
         int k = array[i] / 256;
         bool cont = true;
 
-        // First time something comes to memory, page it in
         if (number_of_frames_created == 0)
         {
             printf("Adress %04x is not in physical memory\n", array[i]);
@@ -112,8 +110,6 @@ void fifo()
             if (k == frames[j])
             {
                 printf("Adress %04x is on page %d which is already in physical memoroy\n", array[i], k);
-                // number_of_frames_created++;
-                //  Tilldelning till befintlig sida.
                 p_hits++;
                 mem_acc++;
                 cont = false;
